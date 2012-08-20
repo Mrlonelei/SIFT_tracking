@@ -413,13 +413,55 @@ void ModifyTrackingWindows(Rect &trackingRect ,Rect* TrackingWindow,Rect WholeIm
 }
 
 //////////////////////////////////////////////////////////////////////////
+//For optical flow
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
 //caculate the partial of the point p in image ipim
 //note that the return Point2D,Vx=v.col,Vy = v.row
 //////////////////////////////////////////////////////////////////////////
-Point2D partialx(IplImage* ipIm,Point2D p)
+Point2D partial(IplImage* ipIm,Point2D p)
 {
 	Point2D v;
-	v.col = (ipIm->imageData[p.row,p.col+1]-ipIm->imageData[p.row,p.col-1])/2.0;
-	v.row =(ipIm->imageData[p.row+1,p.col]-ipIm->imageData[p.row-1,p.col])/2.0;
+	v.col = (pixval32f(ipIm,p.row,p.col+1)-pixval32f(ipIm,p.row,p.col-1))/2.0;
+	v.row = (pixval32f(ipIm,p.row+1,p.col)-pixval32f(ipIm,p.row-1,p.col))/2.0;
 	return v;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//caculate A
+//////////////////////////////////////////////////////////////////////////
+
+Point2D getOptFlow(IplImage* currentFrame,Point2D p,IplImage* preFrame)
+{
+	Point2D temp;
+	double b[2];
+	b[1]=0;b[2]=0;
+	
+	double M11=0,M12=0,M22=0;
+	for(int i = -OPTICAL_FLOW_POINT_AREA/2; i < OPTICAL_FLOW_POINT_AREA/2; i++)
+	{
+		for (int j = -OPTICAL_FLOW_POINT_AREA/2;j < OPTICAL_FLOW_POINT_AREA/2;j++)
+		{
+			temp = partial(currentFrame,Point2D(p.row+i,p.col+j));
+			M11 += temp.col*temp.col;
+			M12 += temp.col*temp.row;
+			M22 += temp.row*temp.row;
+			b[0] += temp.col*(pixval32f(currentFrame,p.row+i,p.col+j)-pixval32f(preFrame,p.row+i,p.col+j));
+			b[1] += temp.row*(pixval32f(currentFrame,p.row+i,p.col+j)-pixval32f(preFrame,p.row+i,p.col+j));
+		}
+	}
+	
+	cv::Mat M = (cv::Mat_<double>(2,2)<<M11,M12,M12,M22);
+	cv::Mat Mi = M.inv();
+	temp.col=0;
+	temp.row=0;
+	b[0] = -b[0];
+	b[1] = -b[1];
+	cv::Mat Mb = (cv::Mat_<double>(2,1) <<b[0],b[1] );
+	cv::Mat Mr = Mi.mul(Mb);
+	int vy = Mr.at<double>(1,0);
+	int vx = Mr.at<double>(0,0);
+	
+	return (Point2D(vx,vy));
 }

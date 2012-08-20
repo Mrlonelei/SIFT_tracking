@@ -17,8 +17,10 @@ public:
 		this->TrackingWindow.left = trackingRect.left-cvRound(TRACKING_WINDOW_SIZE*trackingRect.width);
 		this->TrackingWindow.width = trackingRect.width+cvRound(TRACKING_WINDOW_SIZE*trackingRect.width);
 		this->TrackingWindow.height = trackingRect.height+cvRound(TRACKING_WINDOW_SIZE*trackingRect.height);
+		
+		
 	};
-	bool tracking(ImageHandler* imhdr,SIFT_feature *Sfeat, int Sfeat_num_fp, Rect *trackingwindow,Rect *trackingRect);
+	bool tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feature *Sfeat, int Sfeat_num_fp, Rect *trackingwindow,Rect *trackingRect);
 	Point2D CaculatePointVector(SIFT_feature_unit sfu,IplImage ipim);
 	/*Point2D GetCentroid();
 	double GetDensity();*/

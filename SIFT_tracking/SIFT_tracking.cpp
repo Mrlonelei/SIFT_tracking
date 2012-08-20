@@ -278,6 +278,8 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 	TrackingWindow.width = trackingRect.width+cvRound(TRACKING_WINDOW_SIZE*trackingRect.width);
 	TrackingWindow.height = trackingRect.height+cvRound(TRACKING_WINDOW_SIZE*trackingRect.height);*/
 	
+	IplImage* preFrame;
+
 	//tracking loop
 	while (key == (char)-1)
 	{
@@ -288,6 +290,7 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 		{
 			delete[] curFrame;
 		}*/
+		preFrame = (IplImage*)imageSequence->getIplImage();
 		imageSequence->getImage();
 		curFrame = (IplImage*)imageSequence->getIplImage();
 		curFrameRep = new SIFT_feature(curFrame,TrackingWindow);
@@ -314,7 +317,7 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 							fprintf (resultStream, "%8d %3d %3d %3d %3d %5.3f\n", counter, tracker->getTrackedPatch().left, tracker->getTrackedPatch().upper, tracker->getTrackedPatch().width, tracker->getTrackedPatch().height, tracker->getConfidence());*/
 			
 				char *myBuff = new char[255];
-				sprintf (myBuff, "%sframe%08d.jpg", resultDir, counter+2);
+				int flag = sprintf (myBuff, "%sframe%08d.jpg", resultDir, counter+2);
 				imageSequence->saveImage(myBuff);
 		}
 		counter++;

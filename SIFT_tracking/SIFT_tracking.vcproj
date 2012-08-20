@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OS_specific.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SIFT_feature.h"
 				>
 			</File>
@@ -301,6 +305,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\stdint.h"
 				>
 			</File>
 			<Filter

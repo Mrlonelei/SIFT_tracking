@@ -16,6 +16,8 @@ enum feature_match_type
 	FEATURE_MDL_MATCH,
 };
 
+/*define Pi*/
+#define PI 3.1415926
 
 /* colors in which to display different feature types */
 #define FEATURE_OXFD_COLOR CV_RGB(255,255,0)
@@ -123,5 +125,8 @@ void ConvertImage(IplImage* source, IplImage* target, Rect Roi);
 
 /* Tracking window size factor the template size */
 #define TRACKING_WINDOW_SIZE 0.3
+
+/* Optical flow point area*/
+#define OPTICAL_FLOW_POINT_AREA 5
  
 #endif

@@ -244,7 +244,9 @@ extern int win_closed( char* name );
 
 double descr_dist_sq( struct SIFT_feature_unit* f1, struct SIFT_feature_unit* f2 );
 void ModifyTrackingWindows(Rect &trackintRect ,Rect* trackingwindow,Rect WholeImageSize);
-
-Point2D partialx(ImageHandler* imhdr,Point2D p);
-
+/*
+For optical flow
+*/
+Point2D partial(IplImage* ipIm,Point2D p);
+Point2D getOptFlow(IplImage* currentFrame,Point2D p,IplImage* preFrame);
 #endif
