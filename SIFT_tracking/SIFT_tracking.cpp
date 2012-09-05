@@ -34,7 +34,7 @@ int _tmain()
 	
 	resultDir = "..\\result\\";
 	//source = "F:\\testData\\1.avi";
-	source = "E:\\MachineVision\\testData\\awt\\2.avi";
+	source = "..\\testData\\2.avi";
 	track(input,numBaseClassifier,searchFactor,resultDir,initBB,source);
 	delete trackingRect;
 	system("PAUSE");
@@ -156,8 +156,10 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 	//tracker = new SIFTBoostingTracker (curFrameRep,imageSequence->getIplGrayImage(), trackingRect, wholeImage, numBaseClassifier);
 	
 	SIFT_feature* trackingTemplateRep = new SIFT_feature(curFrame,*trackingRect); 
-	SIFT_navie_tracker *tracker;
-	tracker = new SIFT_navie_tracker(trackingTemplateRep,trackingTemplateRep->GetLength(),*trackingRect);
+	//SIFT_navie_tracker *tracker;
+	//tracker = new SIFT_navie_tracker(trackingTemplateRep,trackingTemplateRep->GetLength(),*trackingRect);
+	SIFT_opt_tracker * tracker;
+	tracker = new SIFT_opt_tracker(trackingTemplateRep,imageSequence->getIplGrayImage(),trackingTemplateRep->GetLength(),*trackingRect);
 	cout<<" done"<<endl;
 
 	Size trackingRectSize;
@@ -290,7 +292,7 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 		{
 			delete[] curFrame;
 		}*/
-		preFrame = (IplImage*)imageSequence->getIplImage();
+		//preFrame = (IplImage*)imageSequence->getIplGrayImage();
 		imageSequence->getImage();
 		curFrame = (IplImage*)imageSequence->getIplImage();
 		curFrameRep = new SIFT_feature(curFrame,TrackingWindow);
@@ -300,6 +302,11 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 			break;
 		}
 		
+		/*if (!tracker->tracking(imageSequence,curFrameRep,curFrameRep->GetLength(),&TrackingWindow,trackingRect))
+		{
+			cout<<"tracking lost!!!"<<endl;
+			break;
+		}*/
 		if (!tracker->tracking(imageSequence,curFrameRep,curFrameRep->GetLength(),&TrackingWindow,trackingRect))
 		{
 			cout<<"tracking lost!!!"<<endl;
@@ -326,6 +333,7 @@ void track(ImageSource::InputDevice input, int numBaseClassifier, int searchFact
 		{
 			delete curFrameRep;
 		}
+
 	}
 	//delete tracker;
 	delete imageSequenceSource;

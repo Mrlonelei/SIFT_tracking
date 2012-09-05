@@ -9,7 +9,7 @@ SIFT_opt_tracker::~SIFT_opt_tracker(void)
 {
 }
 
-bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feature *Sfeat, int Sfeat_num_fp,Rect *trackingWindow,Rect *trackingRect)
+bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,SIFT_feature *Sfeat, int Sfeat_num_fp,Rect *trackingWindow,Rect *trackingRect)
 {
 	int count=0;
 	/*struct SIFT_feature_unit *feat_cmp;
@@ -17,6 +17,7 @@ bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feat
 	int k = 0;
 	double d0,d1;*/
 	Point2D MovingVector(0,0);
+	Point2D GlobalCoor(0,0);
 	Point2D TempMovingVector(0,0);
 	double MovingVectorx,MovingVectory,TempMovingVectorx,TempMovingVectory;
 	double MaxMove=0;
@@ -24,11 +25,17 @@ bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feat
 	double theta=0.0;
 	double orghistogram[12];
 	memset(orghistogram,0,12);
-	for (int i = 0;i<Sfeat_num_fp;i++)
+	IplImage* temp;
+	temp = cvCloneImage(imhdr->getIplGrayImage());
+	for (int i = 0;i<this->optflow.size();i++)
 	{
-		MovingVector = getOptFlow(imhdr->getIplImage(),Point2D(tracking_template->feat[i].y,tracking_template->feat[i].x),preFrame);
-		optflow.push_back(MovingVector);
-		orghistogram[(int)(atan((double)MovingVector.row/(double)MovingVector.col)/(PI/6.0))] =(sqrt(MovingVector.col*MovingVector.col+MovingVector.row*MovingVector.row));
+		//GlobalCoor = Point2D(tracking_template->GetFeat(i)->y+trackingRect->upper,tracking_template->GetFeat(i)->x+trackingRect->left);
+		MovingVector = getOptFlow(imhdr->getIplGrayImage(),optflow[i],this->preFrame);
+		GlobalCoor = optflow[i]+MovingVector;
+		orghistogram[(int)(atan((double)MovingVector.drow/(double)MovingVector.dcol)/(PI/6.0))] +=(sqrt((double)(MovingVector.dcol*MovingVector.dcol+MovingVector.drow*MovingVector.drow)));
+		imhdr->paintPoint(optflow[i],Color(0,255,0));
+		imhdr->paintPoint(GlobalCoor,Color(255,0,0));
+		this->optflow[i] = GlobalCoor;
 		//feat_cmp = Sfeat->GetFeat(i);
 		//k = kdtree_bbf_knn(kd_root,feat_cmp,2,&nbrs,200);
 		//if (k==2)
@@ -58,7 +65,7 @@ bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feat
 		//}
 		//free(nbrs);
 	}
-	double MaxDirection=0,MaxDirectionI;
+	/*double MaxDirection=0,MaxDirectionI;
 	for (int i=0;i<12;i++)
 	{
 		if(orghistogram[i]>MaxDirection)
@@ -77,8 +84,10 @@ bool SIFT_opt_tracker::tracking(ImageHandler* imhdr,IplImage* preFrame,SIFT_feat
 		MovingVector = Point2D(cvRound(MovingVectory),cvRound(MovingVectorx));
 		*trackingRect = *trackingRect+MovingVector; 
 	}
-
+	
 	imhdr->paintRectangle(*trackingRect);
-	imhdr->paintRectangle(*trackingWindow);
+	imhdr->paintRectangle(*trackingWindow);*/
+	this->preFrame = cvCloneImage(temp);
+	//delete temp;
 	return true;
 }

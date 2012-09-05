@@ -76,13 +76,16 @@ public:
 
 	Point2D();
 	Point2D(int row, int col);
+	Point2D(double dr,double dc);
 
 	int row;
 	int col;
+	double drow;
+	double dcol;
 
 	Point2D operator+ (Point2D p);
 	Point2D operator- (Point2D p);
 	Point2D operator= (Point2D p);
 	Point2D operator= (Rect r);
-
+	
 };

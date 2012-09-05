@@ -213,6 +213,16 @@ Point2D::Point2D (int row, int col)
 {
 	this->row = row;
 	this->col = col;
+	this->drow = (double)row;
+	this->dcol = (double)col;
+}
+
+Point2D::Point2D(double dr,double dc)
+{
+	this->row = cvRound(dr);
+	this->col = cvRound(dc);
+	this->dcol = dc;
+	this->drow = dr;
 }
 
 Point2D Point2D::operator+ (Point2D p)
@@ -220,6 +230,8 @@ Point2D Point2D::operator+ (Point2D p)
 	Point2D p_tmp;
 	p_tmp.col = col+p.col;
 	p_tmp.row = row+p.row;
+	p_tmp.dcol = this->dcol+p.dcol;
+	p_tmp.drow = this->drow + p.drow;
 	return p_tmp;
 }
 
@@ -228,13 +240,17 @@ Point2D Point2D::operator- (Point2D p)
 	Point2D p_tmp;
 	p_tmp.col = col-p.col;
 	p_tmp.row = row-p.row;
+	p_tmp.dcol = this->dcol - p.dcol;
+	p_tmp.drow = this->drow - p.drow;
 	return p_tmp;
 }
 
 Point2D Point2D::operator= (Point2D p)
 {
-	row = p.row;
-	col = p.col;
+	this->row = cvRound(p.drow);
+	this->col = cvRound(p.dcol);
+	drow = p.drow;
+	dcol = p.dcol;
 	return *this;
 }
 
@@ -242,5 +258,7 @@ Point2D Point2D::operator= (Rect r)
 {
 	row = r.upper;
 	col = r.left;
+	drow = (double)r.upper;
+	dcol = (double)r.left;
 	return *this;
 }

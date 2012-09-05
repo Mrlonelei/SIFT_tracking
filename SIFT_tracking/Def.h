@@ -127,6 +127,6 @@ void ConvertImage(IplImage* source, IplImage* target, Rect Roi);
 #define TRACKING_WINDOW_SIZE 0.3
 
 /* Optical flow point area*/
-#define OPTICAL_FLOW_POINT_AREA 5
+#define OPTICAL_FLOW_POINT_AREA 10
  
 #endif

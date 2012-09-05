@@ -31,6 +31,7 @@
 #include "Def.h"
 #include "SIFTBoostingTracker.h"
 #include "SIFT_navie_tracker.h"
+#include "SIFT_opt_tracker.h"
 #include "kdtree.h"
 #include "minpq.h"
 

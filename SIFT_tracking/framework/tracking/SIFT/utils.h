@@ -62,6 +62,10 @@ static __inline float pixval32f( IplImage* img, int r, int c )
 {
 	return ( (float*)(img->imageData + img->widthStep*r) )[c];
 }
+static __inline float pixval8U(IplImage* img, int r, int c )
+{
+	return ( (unsigned char*)(img->imageData + img->widthStep*r) )[c];
+}
 
 
 /**
